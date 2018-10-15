@@ -10,9 +10,6 @@ $InformationPreference = "Continue"
 $LogContext = [Stack[string]]::new()
 
 
-Import-Module "Profile"
-
-
 
 $DockerLinePrefix = " ----->"
 
