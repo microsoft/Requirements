@@ -1,5 +1,4 @@
 
-
 It "Should write to host correctly" -Skip {
   # convert Host stream to array by writing to then reading from file
   $tempFile = "$env:TEMP\$(New-Guid).out.txt"
@@ -21,4 +20,27 @@ It "Should write to host correctly" -Skip {
   }
 }
 
-  
+
+
+$output = @"
+00:00:00 [name] BEGIN TEST description
+00:00:00 [name] END TEST => $false
+00:00:00 [name] BEGIN SET description
+00:00:00 [name] END SET
+00:00:00 [name] BEGIN TEST description
+00:00:00 [name] END TEST => $true
+"@
+
+Describe "StreamLogger" {
+  Mock Get-Date { "00:00:00" }
+  It "Should output correctly" {
+    $name, $description = "name", "description"
+    $logger.BeginPrecheck($name, $description)
+    $logger.EndPrecheck($false)
+    $logger.BeginSet($name, $description)
+    $logger.EndSet()
+    $logger.BeginValidate($name, $description)
+    $logger.EndValidate($true)
+
+  }
+}

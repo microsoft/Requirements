@@ -3,21 +3,11 @@
 ."$PSScriptRoot\core.ps1"
 
 class EmptyLoggingContext {
-  [void] BeginPrecheck() {
-
-  }
-  [void] EndPrecheck([boolean] $inDesiredState) {
-
-  }
-  [void] BeginSet() {
-
-  }
-  [void] EndSet() {
-
-  }
-  [void] BeginValidate() {
-
-  }
+  [void] BeginPrecheck() { }
+  [void] EndPrecheck([boolean] $inDesiredState) { }
+  [void] BeginSet() { }
+  [void] EndSet() { }
+  [void] BeginValidate() { }
   [void] EndValidate([boolean] $validated) {
 
   }

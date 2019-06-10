@@ -19,3 +19,22 @@ class Requirement {
   [scriptblock] $Set
   [string[]] $DependsOn
 }
+
+enum Method {
+  test
+  set
+  validate
+}
+
+enum LifecycleState {
+  start
+  stop
+}
+
+class RequirementEvent {
+  [Requirement] $Requrement
+  [datetime] $Date
+  [Method] $Method
+  [LifecycleState] $State
+  $Result
+}
