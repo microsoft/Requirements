@@ -4,19 +4,19 @@ $ErrorActionPreference = "Stop"
 
 # idempotently applies a requirement
 # TODO: logging context
-function applyRequirement([Requirement]$Requirement, [LoggingContext]$LoggingContext) {
+function applyRequirement([Requirement]$Requirement) {
   $inDesiredState = $false
   if ($Requirement.Test) {
     [RequirementEvent]@{
       Requirement = $Requirement
       Method      = "Test"
-      State       = "Begin"
+      State       = "Start"
     }
     $result = &$Requirement.Test
     [RequirementEvent]@{
       Requirement = $Requirement
       Method      = "Test"
-      State       = "End"
+      State       = "Stop"
       Result      = $result
     }
   }
@@ -25,13 +25,13 @@ function applyRequirement([Requirement]$Requirement, [LoggingContext]$LoggingCon
       [RequirementEvent]@{
         Requirement = $Requirement
         Method      = "Set"
-        State       = "Begin"
+        State       = "Start"
       }
       $result = &$Requirement.Set
       [RequirementEvent]@{
         Requirement = $Requirement
         Method      = "Set"
-        State       = "End"
+        State       = "Stop"
         Result      = $result
       }
     }
@@ -39,25 +39,25 @@ function applyRequirement([Requirement]$Requirement, [LoggingContext]$LoggingCon
       [RequirementEvent]@{
         Requirement = $Requirement
         Method      = "Validate"
-        State       = "Begin"
+        State       = "Start"
       }
       $result = &$Requirement.Test
       [RequirementEvent]@{
         Requirement = $Requirement
         Method      = "Validate"
-        State       = "End"
+        State       = "Stop"
         Result      = $result
       }
       if (-not $result) {
-        throw "Failed to apply Requirement '$($Requirement.Name)'"
+        Write-Error "Failed to apply Requirement '$($Requirement.Name)'"
       }
     }
   }
 }
 
 # applies an array of requirements
-function applyRequirements([Requirement[]]$Requirements, $LoggingContext) {
-  $Requirements | % { applyRequirement $_ $LoggingContext }
+function applyRequirements([Requirement[]]$Requirements) {
+  $Requirements | % { applyRequirement $_ }
 }
 
 # sorts an array of Requirements in topological order

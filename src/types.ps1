@@ -21,19 +21,19 @@ class Requirement {
 }
 
 enum Method {
-  test
-  set
-  validate
+  Test
+  Set
+  Validate
 }
 
 enum LifecycleState {
-  start
-  stop
+  Start
+  Stop
 }
 
 class RequirementEvent {
   [Requirement] $Requrement
-  [datetime] $Date
+  [datetime] $Date = (Get-Date)
   [Method] $Method
   [LifecycleState] $State
   $Result

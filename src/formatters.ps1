@@ -1,3 +1,6 @@
+<##
+
+#>
 
 using namespace System.Collections.Generic
 
@@ -33,7 +36,7 @@ function Format-Checklist {
     switch ($_.Method) {
       "Test" {
         switch ($_.State) {
-          "Begin" {
+          "Start" {
             $symbol = " "
             $color = "Yellow"
             $message = "$timestamp [ $symbol ] $description"
@@ -44,7 +47,7 @@ function Format-Checklist {
       }
       "Validate" {
         switch ($_.State) {
-          "End" {
+          "Stop" {
             switch ([boolean]$_.Result) {
               $true {
                 $symbol = [char]8730
@@ -109,11 +112,11 @@ function Format-CallStack {
     switch ($_.Method) {
       "Test" {
         switch ($_.State) {
-          "Begin" {
+          "Start" {
             $context.Push($name)
             Write-Host "BEGIN TEST $description"
           }
-          "End" {
+          "Stop" {
             $context.Pop()
             Write-Host "END TEST => $result"
           }
@@ -121,11 +124,11 @@ function Format-CallStack {
       }
       "Set" {
         switch ($_.State) {
-          "Begin" {
+          "Start" {
             $context.Push($name)
             Write-Host "BEGIN SET $description"
           }
-          "End" {
+          "Stop" {
             $context.Pop()
             Write-Host "END SET"
           }
@@ -133,11 +136,11 @@ function Format-CallStack {
       }
       "Validate" {
         switch ($_.State) {
-          "Begin" {
+          "Start" {
             $context.Push($name)
             Write-Host "BEGIN TEST $description"
           }
-          "End" {
+          "Stop" {
             $context.Pop()
             Write-Host "END TEST => $result"
           }
