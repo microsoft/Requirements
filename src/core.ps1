@@ -1,11 +1,11 @@
 
-."$PSScriptRoot\types.ps1"
 $ErrorActionPreference = "Stop"
+."$PSScriptRoot\types.ps1"
 
 # idempotently applies a requirement
 # TODO: logging context
 function applyRequirement([Requirement]$Requirement) {
-  $inDesiredState = $false
+  $result = $false
   if ($Requirement.Test) {
     [RequirementEvent]@{
       Requirement = $Requirement
@@ -20,7 +20,7 @@ function applyRequirement([Requirement]$Requirement) {
       Result      = $result
     }
   }
-  if (-not $inDesiredState) {
+  if (-not $result) {
     if ($Requirement.Set) {
       [RequirementEvent]@{
         Requirement = $Requirement

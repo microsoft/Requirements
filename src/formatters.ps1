@@ -30,12 +30,18 @@ function Format-Checklist {
     [RequirementEvent[]]$RequirementEvent
   )
 
+  begin {
+    $lastDescription = ""
+  }
+
   process {
-    $timestamp = Get-Date -Date $_.Requirement.Date -Format 'hh:mm:ss'
-    $description = $_.Requirement.Description
-    switch ($_.Method) {
+    $date = if ($_.Requirement.Date) { $_.Requirement.Date } else { Get-Date }
+    $timestamp = Get-Date -Date $date -Format 'hh:mm:ss'
+    $description = $_.Requirement.Describe
+    $method, $state, $result = $_.Method, $_.State, $_.Result
+    switch ($method) {
       "Test" {
-        switch ($_.State) {
+        switch ($state) {
           "Start" {
             $symbol = " "
             $color = "Yellow"
@@ -46,9 +52,9 @@ function Format-Checklist {
         }
       }
       "Validate" {
-        switch ($_.State) {
+        switch ($state) {
           "Stop" {
-            switch ([boolean]$_.Result) {
+            switch ($result) {
               $true {
                 $symbol = [char]8730
                 $color = "Green"

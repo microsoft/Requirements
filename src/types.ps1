@@ -1,18 +1,6 @@
 
-. "$PSScriptRoot\loggers\ChecklistLogger.ps1"
-. "$PSScriptRoot\loggers\StreamLogger.ps1"
-
-class LoggingContext {
-  [string] $Tab = "  "
-  [string] $Prefix = "BEGIN "
-  [string] $Suffix = "END "
-  [int] $Depth = 0
-  [scriptblock] $Write = { Param($s) Write-Host $s }
-}
-
 class Requirement {
-  [ValidateNotNullOrEmpty()]
-  [string] $Name = (New-Guid)
+  [string] $Name
   [ValidateNotNullOrEmpty()]
   [string] $Describe
   [scriptblock] $Test
@@ -32,9 +20,9 @@ enum LifecycleState {
 }
 
 class RequirementEvent {
-  [Requirement] $Requrement
-  [datetime] $Date = (Get-Date)
+  [Requirement] $Requirement
+  [datetime] $Date
   [Method] $Method
   [LifecycleState] $State
-  $Result
+  [PSObject] $Result
 }
