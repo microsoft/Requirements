@@ -1,6 +1,3 @@
-<##
-
-#>
 
 using namespace System.Collections.Generic
 
@@ -9,23 +6,15 @@ $ErrorActionPreference = "Stop"
 
 <#
 .SYNOPSIS
-  Short description
-.DESCRIPTION
-  Long description
-.EXAMPLE
-  PS C:\> <example usage>
-  Explanation of what the example does
-.INPUTS
-  Inputs (if any)
-.OUTPUTS
-  Output (if any)
+  Formats Requirement log events as a live-updating checklist
 .NOTES
-  General notes
+  Uses Write-Host
 #>
 function Format-Checklist {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
     [CmdletBinding()]
     Param(
+        # Logged Requirement lifecycle events
         [Parameter(Mandatory, ValueFromPipeline)]
         [Alias("Event")]
         [RequirementEvent[]]$RequirementEvent
@@ -81,27 +70,18 @@ function Format-Checklist {
 
 <#
 .SYNOPSIS
-  Short description
-.DESCRIPTION
-  Long description
-.EXAMPLE
-  PS C:\> <example usage>
-  Explanation of what the example does
-.INPUTS
-  Inputs (if any)
-.OUTPUTS
-  Output (if any)
+  Formats every log event with metadata, including a stack of requirement names when using nested Requirements
 .NOTES
-  General notes
+  Uses Write-Host
 #>
 function Format-CallStack {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
     [CmdletBinding()]
     Param(
+        # Logged Requirement lifecycle events
         [Parameter(Mandatory, ValueFromPipeline)]
         [Alias("Event")]
-        [RequirementEvent[]]$RequirementEvent,
-        [switch]$Measure
+        [RequirementEvent[]]$RequirementEvent
     )
 
     begin {

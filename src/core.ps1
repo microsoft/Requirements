@@ -3,7 +3,6 @@ $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
 
 # idempotently applies a requirement
-# TODO: logging context
 function applyRequirement([Requirement]$Requirement) {
     $result = $false
     if ($Requirement.Test) {
@@ -14,7 +13,6 @@ function applyRequirement([Requirement]$Requirement) {
     if (-not $result) {
         if ($Requirement.Set) {
             [RequirementEvent]::new($Requirement, "Set", "Start")
-            # $result = &$Requirement.Set
             &$Requirement.Set
             [RequirementEvent]::new($Requirement, "Set", "Stop", $result)
         }
