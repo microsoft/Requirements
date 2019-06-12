@@ -3,6 +3,16 @@ $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\interface.ps1"
 
 $PlatformLacksDscSupport = $PSVersionTable.PSEdition -eq "Core"
+if (-not $PlatformLacksDscSupport) {
+    $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+    $isAdmin = $identity.groups -match "S-1-5-32-544"
+    if (-not $isAdmin) {
+        throw @"
+You are running PowerShell 5 and are therefore testing DSC resources.
+You must be running as admin to test DSC resources.
+"@
+    }
+}
 
 Describe "New-Requirement" {
     Context "'Script' parameter set" {
@@ -29,7 +39,7 @@ Describe "New-Requirement" {
                     DestinationFile = ""
                 }
             }
-            New-Requirement @requirement | Should -Not -BeNullOrEmpty
+            New-Requirement @requirement | Should -BeTrue
         }
     }
 }
@@ -45,18 +55,20 @@ Describe "Invoke-Requirement" {
     }
     Context "DSC Requirement" {
         It "Should apply the DSC resource" -Skip:$PlatformLacksDscSupport {
-            $tempFilePath = "$env:TEMP\$(New-Guid).txt"
+            $tempFilePath = "$env:TEMP\_dsctest_$(New-Guid).txt"
             $content = "Hello world"
-            $requirement = @{
+            $params = @{
+                Name         = "[file]MyFile"
                 Describe     = "My Dsc Requirement"
                 ResourceName = "File"
                 ModuleName   = "PSDesiredStateConfiguration"
                 Property     = @{
                     Contents        = $content
-                    DestinationFile = $tempFilePath
+                    DestinationPath = $tempFilePath
+                    Force           = $true
                 }
             }
-            Invoke-Requirement (New-Requirement @requirement)
+            New-Requirement @params | Invoke-Requirement
             Get-Content $tempFilePath | Should -Be $content
             Remove-Item $tempFilePath
         }

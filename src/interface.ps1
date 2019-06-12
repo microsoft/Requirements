@@ -68,8 +68,8 @@ function New-Requirement {
             [Requirement]@{
                 Name      = $Name
                 Describe  = $Describe
-                Test      = { Invoke-DscResource -Method "Test" @dscParams }
-                Set       = { Invoke-DscResource -Method "Set" @dscParams }
+                Test      = { Invoke-DscResource -Method "Test" @dscParams }.GetNewClosure()
+                Set       = { Invoke-DscResource -Method "Set" @dscParams }.GetNewClosure()
                 DependsOn = $DependsOn
             }
         }
