@@ -108,6 +108,7 @@ DSC is optimized for handling *many* configurations *asynchronously*.  For examp
 * CI/CD scripts
 * CLIs
 * Dockerfiles
+* Linux
 
 While Requirements supports DSC resources, it does not have a hard dependency on DSC's configuration manager, so if your Requirements do not include DSC resources they will work on any platform that PowerShell Core supports.
 
