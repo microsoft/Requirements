@@ -94,7 +94,7 @@ $requirement = @{
     ModuleName   = "PSDesiredStateConfiguration"
     Property     = @{
         Contents        = "Hello World"
-        DestinationFile = "C:\myFile.txt"
+        DestinationPath = "C:\myFile.txt"
         Force           = $true
     }
 }
