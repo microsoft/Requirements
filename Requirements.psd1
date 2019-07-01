@@ -4,7 +4,7 @@
   RootModule        = 'src\module.psm1'
 
   # Version number of this module.
-  ModuleVersion     = '2.1'
+  ModuleVersion     = '2.2'
 
   # Supported PSEditions
   # CompatiblePSEditions = @()
@@ -64,6 +64,8 @@
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
   FunctionsToExport = @(
+    'Format-CallStack',
+    'Format-Checklist',
     'Invoke-Requirement',
     'New-Requirement',
     'Set-Requirement',
