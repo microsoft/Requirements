@@ -13,7 +13,7 @@ function applyRequirement([Requirement]$Requirement) {
     if (-not $result) {
         if ($Requirement.Set) {
             [RequirementEvent]::new($Requirement, "Set", "Start")
-            &$Requirement.Set
+            $result = &$Requirement.Set
             [RequirementEvent]::new($Requirement, "Set", "Stop", $result)
         }
         if ($Requirement.Test -and $Requirement.Set) {
