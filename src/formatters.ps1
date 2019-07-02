@@ -89,6 +89,7 @@ function Format-CallStack {
     }
 
     process {
+        $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
         $name = $_.Requirement.Name
         $description = $_.Requirement.Describe
         $method, $state, $result = $_.Method, $_.State, $_.Result
@@ -100,13 +101,13 @@ function Format-CallStack {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] BEGIN TEST $description"
+                        Write-Host "$timestamp [$serialized] BEGIN TEST $description"
                     }
                     "Stop" {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] END TEST => $result"
+                        Write-Host "$timestamp [$serialized] END TEST => $result"
                         $context.Pop() | Out-Null
                     }
                 }
@@ -118,13 +119,13 @@ function Format-CallStack {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] BEGIN SET $description"
+                        Write-Host "$timestamp [$serialized] BEGIN SET $description"
                     }
                     "Stop" {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] END SET"
+                        Write-Host "$timestamp [$serialized] END SET"
                         $context.Pop() | Out-Null
                     }
                 }
@@ -136,13 +137,13 @@ function Format-CallStack {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] BEGIN TEST $description"
+                        Write-Host "$timestamp [$serialized] BEGIN TEST $description"
                     }
                     "Stop" {
                         $callstack = $context.ToArray()
                         [array]::Reverse($callstack)
                         $serialized = $callstack -join ">"
-                        Write-Host "$($_.Date) [$serialized] END TEST => $result"
+                        Write-Host "$timestamp [$serialized] END TEST => $result"
                         $context.Pop() | Out-Null
                     }
                 }
