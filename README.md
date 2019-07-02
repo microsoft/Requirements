@@ -43,7 +43,7 @@ $requirements = @(
 )
 ```
 
-### Idempotently `Set`ting requirements 
+### Idempotently Setting requirements 
 Simply pipe an array of `Requirement`s to `Invoke-Requirement`
 
 ```powershell
