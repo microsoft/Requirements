@@ -1,6 +1,8 @@
 # Requirements
 Requirements is a PowerShell Gallery module for declaratively describing a system as a set of "requirements", then idempotently setting each requirement to its desired state.
 
+The background motivation and implementation design are discussed in detail in [Declarative Idempotency](https://itnext.io/declarative-idempotency-aaa07c6dd9a0?source=friends_link&sk=f0464e8e29525b23aabe766bfb557dd7).
+
 ## Usage
 
 We use the term `Test` to refer to the condition that describes whether the Requirement is in its desired state.  We use the term `Set` to refer to the command that a `Requirement` uses to put itself in its desired state if it is known to not be in its desired state.
@@ -41,6 +43,28 @@ $requirements = @(
         Set      = { $mySystem.Add(5) | Out-Null; Start-Sleep 1 }
     }
 )
+```
+
+#### Validation Requirements
+If you wish to assert that a precondition is met before continuing, you can leave out the `Set` block.  This is useful for [Defensive programming](https://itnext.io/defensive-powershell-with-validation-attributes-8e7303e179fd?source=friends_link&sk=14765ca9554709a77f8af7d73612ef5b), or when a Requirement requires manual steps.
+
+```powershell
+@{
+    Name     = "Resource 1"
+    Describe = "Azure CLI is authenticated"
+    Test     = { az account }
+}
+```
+
+#### Idempotent `Set` blocks
+Sometimes, your `Set` block is already idempotent and an associated `Test` block cannot be defined.  In this case, you can leave out the `Test` block.
+
+```powershell
+@{
+    Name     = "Resource 1"
+    Describe = "Initial state of system is backed up"
+    Set      = { Get-StateOfSystem | Out-File "$BackupContainer/$(Get-Date -Format 'yyyyMMddhhmmss').log" }
+]
 ```
 
 ### Idempotently Setting requirements 
