@@ -35,7 +35,7 @@ function Format-Checklist {
                         $symbol = " "
                         $color = "Yellow"
                         $message = "$timestamp [ $symbol ] $description"
-                        Write-Host $message -ForegroundColor $color -NoNewline
+                        Write-Host $message -ForegroundColor $color
                         $lastDescription = $description
                     }
                 }
