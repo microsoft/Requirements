@@ -38,6 +38,18 @@ function Format-Checklist {
                         Write-Host $message -ForegroundColor $color -NoNewline
                         $lastDescription = $description
                     }
+                    "Stop" {
+                        switch ($result) {
+                            $true {
+                                $symbol = [char]8730
+                                $color = "Green"
+                                $message = "$timestamp [ $symbol ] $description"
+                                Write-Host "`r$(' ' * $lastDescription.Length)" -NoNewline
+                                Write-Host "`r$message" -ForegroundColor $color
+                                $lastDescription = $description
+                            }
+                        }
+                    }
                 }
             }
             "Validate" {
