@@ -1,15 +1,15 @@
 @{
-  'Rules' = @{
-    'PSAvoidUsingCmdletAliases' = @{
-      'Whitelist' = @(
-        '?',
-        '%',
-        'foreach',
-        'group',
-        'measure',
-        'select',
-        'where'
-      )
+    'Rules' = @{
+        'PSAvoidUsingCmdletAliases' = @{
+            'Whitelist' = @(
+                '?',
+                '%',
+                'foreach',
+                'group',
+                'measure',
+                'select',
+                'where'
+            )
+        }
     }
-  }
 }
