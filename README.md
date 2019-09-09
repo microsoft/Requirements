@@ -64,7 +64,7 @@ Sometimes, your `Set` block is already idempotent and an associated `Test` block
     Name     = "Resource 1"
     Describe = "Initial state of system is backed up"
     Set      = { Get-StateOfSystem | Out-File "$BackupContainer/$(Get-Date -Format 'yyyyMMddhhmmss').log" }
-]
+}
 ```
 
 ### Idempotently Setting requirements 
