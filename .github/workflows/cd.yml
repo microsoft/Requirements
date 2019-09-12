@@ -23,5 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Publish Module
+        env:
+          PSGALLERY_NUGET_API_KEY: ${{ secrets.PSGALLERY_NUGET_API_KEY }}
         shell: pwsh
         run: ./.github/scripts/Publish-Module
