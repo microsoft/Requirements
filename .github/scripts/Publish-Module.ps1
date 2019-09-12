@@ -16,4 +16,4 @@ $template = Get-Content $ModuleManifestPath -Raw
 $expanded = $template -replace "{{MODULE_VERSION}}", $nextVersion
 $expanded | Out-File $ModuleManifestPath -Force
 
-Publish-Module -Path $ModuleManifestPath -WhatIf
+Publish-Module -Path $ModuleManifestPath -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY -WhatIf
