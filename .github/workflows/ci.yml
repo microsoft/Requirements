@@ -8,9 +8,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Lint
+      - name: Install Dependencies
+        shell: pwsh
+        run: ./.github/scripts/Install-Dependencies
+      - name: Assert Linting
         shell: pwsh
         run: ./.github/scripts/Assert-Linting
-      - name: Test
+      - name: Assert Tests
         shell: pwsh
         run: ./.github/scripts/Assert-Tests
