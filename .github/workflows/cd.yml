@@ -1,0 +1,16 @@
+name: CD
+
+on: deployment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Lint
+        run: ./.github/Assert-Linting
+      - name: Test
+        run: ./.github/Assert-Tests
+      - name: Publish
+        run: ./.github/Publish-Module
