@@ -3,7 +3,7 @@
     Throws an error if any Pester tests fail
 #>
 
-Install-Module Pester
+Install-Module Pester -Force
 Import-Module Pester
 
 $RepoRoot = "$PSScriptRoot/../.."
