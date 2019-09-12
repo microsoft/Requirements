@@ -4,7 +4,7 @@
     RootModule        = 'src\module.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '2.2.4'
+    ModuleVersion     = '{{MODULE_VERSION}}'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()

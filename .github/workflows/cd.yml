@@ -3,14 +3,23 @@ name: CD
 on: deployment
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
-      - name: Lint
-        run: ./.github/Assert-Linting
-      - name: Test
-        run: ./.github/Assert-Tests
-      - name: Publish
-        run: ./.github/Publish-Module
+      - name: Assert Linting
+        shell: pwsh
+        run: ./.github/scripts/Assert-Linting
+      - name: Assert Tests
+        shell: pwsh
+        run: ./.github/scripts/Assert-Tests
+
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Assert Linting
+        shell: pwsh
+        run: ./.github/scripts/Publish-Module
