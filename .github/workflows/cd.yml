@@ -1,6 +1,7 @@
 name: CD
 
-on: deployment
+# on: deployment
+on: push
 
 jobs:
   validate:
