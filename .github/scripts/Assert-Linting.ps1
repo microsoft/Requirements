@@ -6,7 +6,7 @@
     writes a message to the output stream associated with the highest-severity of issue found.
 #>
 
-Install-Module PSScriptAnalyzer -Force
+Install-Module PSScriptAnalyzer -Force | Out-Null
 Import-Module PSScriptAnalyzer
 
 $RepoRoot = "$PSScriptRoot/../.."
