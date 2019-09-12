@@ -8,9 +8,9 @@ $InformationPreference = "Continue"
 $RepoRoot = "$PSScriptRoot/../.."
 $ModuleManifestPath = "$RepoRoot/Requirements.psd1"
 
-$currentVersion = [Version](Find-Module Requirements).Version
-
-$nextVersion = "$($currentVersion.Major).($currentVersion.Minor).$($currentVersion.Build + 1)"
+(Find-Module Requirements).Version -match "(\d+)\.(\d+)\.(\d+)" | Out-Null
+$major, $minor, $build = $Matches[1..3]
+$nextVersion = "$major.$minor.$($build + 1)"
 
 $template = Get-Content $ModuleManifestPath -Raw
 $expanded = $template -replace "{{MODULE_VERSION}}", $nextVersion
