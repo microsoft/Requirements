@@ -7,10 +7,12 @@
 #>
 
 $ErrorActionPreference = "Stop"
+
 Import-Module PSScriptAnalyzer
 
-$issues = Invoke-ScriptAnalyzer -Path "$PSScriptRoot\.." -Recurse
+$RepoRoot = "$PSScriptRoot/../.."
 
+$issues = Invoke-ScriptAnalyzer -Path $RepoRoot -Recurse
 if ($issues) {
     $issues | Format-Table
     throw "Encountered $($issues.Count) linting issues"

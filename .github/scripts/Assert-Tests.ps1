@@ -5,9 +5,11 @@
 
 $ErrorActionPreference = "Stop"
 
-Import-Module "Pester", "$PSScriptRoot/powershell-helpers.psm1"
+Import-Module Pester
 
-Push-Location "$PSScriptRoot/.."
+$RepoRoot = "$PSScriptRoot/../.."
+
+Push-Location $RepoRoot
 try {
     $results = Invoke-Pester -PassThru
     if ($results.FailedCount) {

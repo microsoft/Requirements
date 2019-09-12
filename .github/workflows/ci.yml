@@ -8,11 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Debug
-        run: |
-          Write-Host "Buenos Dias!"
-          Get-ChildItem -Recurse -File | % FullName
       - name: Lint
-        run: ./.github/Assert-Linting
+        run: pwsh ./.github/scripts/Assert-Linting
       - name: Test
-        run: ./.github/Assert-Tests
+        run: pwsh ./.github/scripts/Assert-Tests
