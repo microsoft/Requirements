@@ -9,8 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Lint
-        use: pwsh
+        uses: pwsh
         run: ./.github/Assert-Linting
       - name: Test
-        use: pwsh
+        uses: pwsh
         run: ./.github/Assert-Tests
