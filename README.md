@@ -3,6 +3,8 @@ Requirements is a PowerShell Gallery module for declaratively describing a syste
 
 The background motivation and implementation design are discussed in detail in [Declarative Idempotency](https://itnext.io/declarative-idempotency-aaa07c6dd9a0?source=friends_link&sk=f0464e8e29525b23aabe766bfb557dd7).
 
+Trevor Sullivan provides a good overview and tutorial [video](https://www.youtube.com/watch?v=efRnjlZKCGw) about Requirements.
+
 ## Usage
 
 We use the term `Test` to refer to the condition that describes whether the Requirement is in its desired state.  We use the term `Set` to refer to the command that a `Requirement` uses to put itself in its desired state if it is known to not be in its desired state.
