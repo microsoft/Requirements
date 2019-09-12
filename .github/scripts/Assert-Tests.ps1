@@ -3,8 +3,7 @@
     Throws an error if any Pester tests fail
 #>
 
-$ErrorActionPreference = "Stop"
-
+Install-Module Pester
 Import-Module Pester
 
 $RepoRoot = "$PSScriptRoot/../.."

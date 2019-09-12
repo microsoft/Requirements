@@ -6,8 +6,7 @@
     writes a message to the output stream associated with the highest-severity of issue found.
 #>
 
-$ErrorActionPreference = "Stop"
-
+Install-Module PSScriptAnalyzer
 Import-Module PSScriptAnalyzer
 
 $RepoRoot = "$PSScriptRoot/../.."
