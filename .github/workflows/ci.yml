@@ -1,15 +1,16 @@
 name: CI
 
-on: [push]
+on: push
 
 jobs:
-  build:
-
+  validate:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Lint
-      run: ./.github/Assert-ValidStyle
-    - name: Test
-      run: ./.github/Assert-ValidTests
+      - uses: actions/checkout@v1
+      - name: Assert Linting
+        shell: pwsh
+        run: ./.github/scripts/Assert-Linting
+      - name: Assert Tests
+        shell: pwsh
+        run: ./.github/scripts/Assert-Tests
