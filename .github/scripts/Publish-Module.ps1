@@ -13,8 +13,8 @@ $ModuleManifestPath = "$RepoRoot/Requirements.psd1"
 
 $current = [Version](Find-Module Requirements).Version
 
-$newMinor = [version]"$Major.$Minor.0"
-$newBuild = [version]"$Major.$Minor.$($build + 1)"
+$newMinor = [version]"$Major.$Minor.0" # the version to use if we incremented Minor
+$newBuild = [version]"$Major.$Minor.$($current.Build + 1)" # the version to use if we increment Build
 $new = if ($newMinor -gt $current) { $newMinor } else { $newBuild }
 
 $template = Get-Content $ModuleManifestPath -Raw
