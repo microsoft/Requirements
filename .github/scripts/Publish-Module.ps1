@@ -11,7 +11,7 @@ $Minor = 2
 
 # paths
 $RepoRoot = "$PSScriptRoot/../.."
-$StagingRoot = "$PSScriptRoot/stage"
+$StagingRoot = "$PSScriptRoot/Requirements"
 
 ##
 # Stage source files
