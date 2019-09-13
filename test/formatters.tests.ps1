@@ -1,5 +1,9 @@
 
-."$PSScriptRoot\formatters.ps1"
+$ErrorActionPreference = "Stop"
+
+$RepoRoot = "$PSScriptRoot/.."
+$SourceRoot = "$RepoRoot/src"
+."$SourceRoot\formatters.ps1"
 
 function invoke($Requirement) {
     [RequirementEvent]::new($Requirement, "Test", "Start")
@@ -20,7 +24,7 @@ Describe "formatters" {
         Set      = { }
     }
     $events = invoke $requirement
-    $tempContainer = if ($env:TEMP) { $env:TEMP } else { $env:TMPDIR }
+    $tempContainer = $PSScriptRoot
     Context "Format-Table" {
         $output = $events | Format-Table | Out-String
         It "Should print a non-empty string" {

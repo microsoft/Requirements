@@ -2,8 +2,6 @@
 $ErrorActionPreference = "Stop"
 Import-Module "$PSScriptRoot\Requirements.psd1" -Force
 
-
-
 $requirements = @(
     @{
         Name     = "Resource 1"
@@ -18,6 +16,11 @@ $requirements = @(
         Set      = { $mySystem.Add(2) | Out-Null; Start-Sleep 1 }
     },
     @{
+        Name     = "Checkpoint"
+        Describe = "Assert before continuing"
+        Test     = { $mySystem }
+    },
+    @{
         Name     = "Resource 3"
         Describe = "Resource 3 is present in the system"
         Test     = { $mySystem -contains 3 }
@@ -28,6 +31,11 @@ $requirements = @(
         Describe = "Resource 4 is present in the system"
         Test     = { $mySystem -contains 4 }
         Set      = { throw "This should not have been reached!"; Start-Sleep 1 }
+    },
+    @{
+        Name     = "Always set"
+        Describe = "Always run the set command"
+        Set      = { Start-Sleep 1 }
     },
     @{
         Name     = "Resource 5"

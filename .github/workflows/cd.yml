@@ -1,0 +1,35 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "Requirements.psd1"
+      - "LICENSE"
+      - "src/*"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Assert Linting
+        shell: pwsh
+        run: ./.github/scripts/Assert-Linting
+      - name: Assert Tests
+        shell: pwsh
+        run: ./.github/scripts/Assert-Tests
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Publish Module
+        env:
+          PSGALLERY_NUGET_API_KEY: ${{ secrets.PSGALLERY_NUGET_API_KEY }}
+        shell: pwsh
+        run: ./.github/scripts/Publish-Module

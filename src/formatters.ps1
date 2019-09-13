@@ -1,8 +1,91 @@
 
 using namespace System.Collections.Generic
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
+Param()
+
 $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
+
+function writePending($timestamp, $description) {
+    $symbol = " "
+    $color = "Yellow"
+    $message = "$timestamp [ $symbol ] $description"
+    Write-Host $message -ForegroundColor $color -NoNewline
+}
+
+function writeSuccess($timestamp, $description, $clearString) {
+    $symbol = [char]8730
+    $color = "Green"
+    $message = "$timestamp [ $symbol ] $description"
+    Write-Host "`r$clearString" -NoNewline
+    Write-Host "`r$message" -ForegroundColor $color
+}
+
+function writeFail($timestamp, $description, $clearString) {
+    $symbol = "X"
+    $color = "Red"
+    $message = "$timestamp [ $symbol ] $description"
+    Write-Host "`r$clearString" -NoNewline
+    Write-Host "`n$message`n" -ForegroundColor $color
+    exit -1
+}
+
+$fsm = @{
+    "Test Test Start $false"    = {
+        writePending @args
+        @{
+            "Test Test Stop $true"  = {
+                writeSuccess @args
+                $fsm
+            }
+            "Test Test Stop $false" = {
+                writeFail @args
+            }
+        }
+    }
+    "Set Set Start $false"      = {
+        writePending @args
+        @{
+            "Set Set Stop $false" = {
+                writeSuccess @args
+                $fsm
+            }
+        }
+    }
+    "TestSet Test Start $false" = {
+        writePending @args
+        @{
+            "TestSet Test Stop $true"  = {
+                writeSuccess @args
+                $fsm
+            }
+            "TestSet Test Stop $false" = {
+                @{
+                    "TestSet Set Start $false" = {
+                        @{
+                            "TestSet Set Stop $false" = {
+                                @{
+                                    "TestSet Validate Start $false" = {
+                                        @{
+                                            "TestSet Validate Stop $true"  = {
+                                                writeSuccess @args
+                                                $fsm
+                                            }
+                                            "TestSet Validate Stop $false" = {
+                                                writeFail @args
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 <#
 .SYNOPSIS
@@ -11,7 +94,6 @@ $ErrorActionPreference = "Stop"
   Uses Write-Host
 #>
 function Format-Checklist {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
     [CmdletBinding()]
     Param(
         # Logged Requirement lifecycle events
@@ -21,62 +103,36 @@ function Format-Checklist {
     )
 
     begin {
-        $lastDescription = ""
+        $previousRequirement = $null
+        $nextFsm = $fsm
     }
 
     process {
-        $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
-        $description = $_.Requirement.Describe
-        $method, $state, $result = $_.Method, $_.State, $_.Result
-        switch ($method) {
-            "Test" {
-                switch ($state) {
-                    "Start" {
-                        $symbol = " "
-                        $color = "Yellow"
-                        $message = "$timestamp [ $symbol ] $description"
-                        Write-Host $message -ForegroundColor $color -NoNewline
-                        $lastDescription = $description
-                    }
-                    "Stop" {
-                        switch ($result) {
-                            $true {
-                                $symbol = [char]8730
-                                $color = "Green"
-                                $message = "$timestamp [ $symbol ] $description"
-                                Write-Host "`r$(' ' * $lastDescription.Length)" -NoNewline
-                                Write-Host "`r$message" -ForegroundColor $color
-                                $lastDescription = $description
-                            }
-                        }
-                    }
-                }
-            }
-            "Validate" {
-                switch ($state) {
-                    "Stop" {
-                        switch ($result) {
-                            $true {
-                                $symbol = [char]8730
-                                $color = "Green"
-                                $message = "$timestamp [ $symbol ] $description"
-                                Write-Host "`r$(' ' * $lastDescription.Length)" -NoNewline
-                                Write-Host "`r$message" -ForegroundColor $color
-                                $lastDescription = $description
-                            }
-                            $false {
-                                $symbol = "X"
-                                $color = "Red"
-                                $message = "$timestamp [ $symbol ] $description"
-                                Write-Host "`n$message`n" -ForegroundColor $color
-                                $lastDescription = $description
-                                exit -1
-                            }
-                        }
-                    }
-                }
-            }
+        $requirement = $_.Requirement
+
+        # build state vector
+        $requirementType = ("Test", "Set" | ? { $requirement.$_ }) -join ""
+        $method = $_.Method
+        $lifecycleState = $_.State
+        $successResult = [bool]$_.Result
+        $stateVector = "$requirementType $method $lifecycleState $successResult"
+
+        # build transition arguments
+        $timestamp = Get-Date -Date $_.Date -Format "hh:mm:ss"
+        $description = $requirement.Describe
+        $clearString = ' ' * "??:??:?? [ ? ] $($previousRequirement.Describe)".Length
+        $transitionArgs = @($timestamp, $description, $clearString)
+
+        # transition FSM
+        if (-not $nextFsm[$stateVector]) {
+            throw @"
+Format-Checklist has reached an unexpected state '$stateVector'.
+If you are piping the output of Invoke-Requirement directly to this
+cmdlet, then this is probably a bug in Format-Checklist.
+"@
         }
+        $nextFsm = &$nextFsm[$stateVector] @transitionArgs
+        $previousRequirement = $requirement
     }
 }
 

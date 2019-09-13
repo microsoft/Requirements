@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "*"
+      - "!master"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Assert Linting
+        shell: pwsh
+        run: ./.github/scripts/Assert-Linting
+      - name: Assert Tests
+        shell: pwsh
+        run: ./.github/scripts/Assert-Tests
