@@ -1,5 +1,9 @@
 
-."$PSScriptRoot\formatters.ps1"
+$ErrorActionPreference = "Stop"
+
+$RepoRoot = "$PSScriptRoot/.."
+$SourceRoot = "$RepoRoot/src"
+."$SourceRoot\formatters.ps1"
 
 function invoke($Requirement) {
     [RequirementEvent]::new($Requirement, "Test", "Start")

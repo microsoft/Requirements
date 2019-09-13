@@ -1,6 +1,13 @@
 name: CD
 
-on: deployment
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "Requirements.psd1"
+      - "LICENSE"
+      - "src/*"
 
 jobs:
   validate:

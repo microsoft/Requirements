@@ -1,6 +1,9 @@
 
 $ErrorActionPreference = "Stop"
-."$PSScriptRoot\interface.ps1"
+
+$RepoRoot = "$PSScriptRoot/.."
+$SourceRoot = "$RepoRoot/src"
+."$SourceRoot\interface.ps1"
 
 $PlatformLacksDscSupport = $PSVersionTable.PSEdition -eq "Core"
 if (-not $PlatformLacksDscSupport) {
