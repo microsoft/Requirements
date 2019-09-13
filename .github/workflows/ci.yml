@@ -1,6 +1,15 @@
 name: CI
 
-on: push
+on:
+  push:
+    branches:
+      - "*"
+      - "!master"
+    paths:
+      - "Requirements.psd1"
+      - "PSScriptAnalyzerSettings.psd1"
+      - "src/*"
+      - "test/*"
 
 jobs:
   validate:
