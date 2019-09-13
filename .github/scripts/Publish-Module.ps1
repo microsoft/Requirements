@@ -13,13 +13,12 @@ $ModuleManifestPath = "$RepoRoot/Requirements.psd1"
 
 $current = [Version](Find-Module Requirements).Version
 
-$isNewMinor = $current.Major -ne $Major -or $current.Minor -ne $Minor
-$build = if ($isNewMinor) { 0 } else { $currentVersion.Build + 1 }
-
-$ModuleVersion = "$Major.$Minor.$build"
+$newMinor = [version]"$Major.$Minor.0"
+$newBuild = [version]"$Major.$Minor.$($build + 1)"
+$new = if ($newMinor -gt $current) { $newMinor } else { $newBuild }
 
 $template = Get-Content $ModuleManifestPath -Raw
-$expanded = $template -replace "{{ModuleVersion}}", $ModuleVersion
+$expanded = $template -replace "{{ModuleVersion}}", $new
 $expanded | Out-File $ModuleManifestPath -Force
 
 Publish-Module -Path $RepoRoot -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY -WhatIf
