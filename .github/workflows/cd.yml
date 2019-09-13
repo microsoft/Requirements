@@ -5,9 +5,8 @@ on:
     branches:
       - master
     paths:
-      - 'Requirements.psd1'
-      - 'src/*.ps1'
-      - '!src/*.tests.ps1'
+      - "Requirements.psd1"
+      - "src"
 
 jobs:
   validate:
