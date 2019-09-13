@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - "Requirements.psd1"
+      - "LICENSE"
       - "src/*"
 
 jobs:
