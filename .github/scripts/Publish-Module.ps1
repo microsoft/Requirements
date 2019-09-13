@@ -5,11 +5,25 @@
 
 $InformationPreference = "Continue"
 
+# static version parts
 $Major = 2
 $Minor = 2
 
+# paths
 $RepoRoot = "$PSScriptRoot/../.."
 $ModuleManifestPath = "$RepoRoot/Requirements.psd1"
+$StagingRoot = "$PSScriptRoot/stage"
+
+##
+# Stage source files
+#
+
+New-Item -ItemType Directory -Path $StagingRoot
+Copy-Item -Path "$RepoRoot/src" -Destination $StagingRoot
+
+##
+# Derive version string
+#
 
 $current = [Version](Find-Module Requirements).Version
 
@@ -17,8 +31,16 @@ $newMinor = [version]"$Major.$Minor.0" # the version to use if we incremented Mi
 $newBuild = [version]"$Major.$Minor.$($current.Build + 1)" # the version to use if we increment Build
 $new = if ($newMinor -gt $current) { $newMinor } else { $newBuild }
 
-$template = Get-Content $ModuleManifestPath -Raw
-$expanded = $template -replace "{{ModuleVersion}}", $new
-$expanded | Out-File $ModuleManifestPath -Force
+##
+# Expand manifest template
+#
 
-Publish-Module -Path $RepoRoot -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY -WhatIf
+$template = Get-Content "$ModuleManifestPath/Requirements.psd1" -Raw
+$expanded = $template -replace "{{ModuleVersion}}", $new
+$expanded | Out-File "$StagingRoot/Requirements.psd1" -Force
+
+##
+# Publish the module
+#
+
+Publish-Module -Path $StagingRoot -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY -WhatIf
