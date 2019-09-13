@@ -1,5 +1,9 @@
 
-."$PSScriptRoot\core.ps1"
+$ErrorActionPreference = "Stop"
+
+$RepoRoot = "$PSScriptRoot/.."
+$SourceRoot = "$RepoRoot/src"
+."$SourceRoot\core.ps1"
 
 Describe "Core" {
     Context "applyRequirement" {
