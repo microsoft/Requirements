@@ -11,7 +11,6 @@ $Minor = 2
 
 # paths
 $RepoRoot = "$PSScriptRoot/../.."
-$ModuleManifestPath = "$RepoRoot/Requirements.psd1"
 $StagingRoot = "$PSScriptRoot/stage"
 
 ##
@@ -19,7 +18,7 @@ $StagingRoot = "$PSScriptRoot/stage"
 #
 
 New-Item -ItemType Directory -Path $StagingRoot
-Copy-Item -Path "$RepoRoot/src" -Destination $StagingRoot
+Copy-Item -Path "$RepoRoot/LICENSE", "$RepoRoot/src" -Destination $StagingRoot -Recurse
 
 ##
 # Derive version string
@@ -35,7 +34,7 @@ $new = if ($newMinor -gt $current) { $newMinor } else { $newBuild }
 # Expand manifest template
 #
 
-$template = Get-Content "$ModuleManifestPath/Requirements.psd1" -Raw
+$template = Get-Content "$RepoRoot/Requirements.psd1" -Raw
 $expanded = $template -replace "{{ModuleVersion}}", $new
 $expanded | Out-File "$StagingRoot/Requirements.psd1" -Force
 
@@ -43,4 +42,4 @@ $expanded | Out-File "$StagingRoot/Requirements.psd1" -Force
 # Publish the module
 #
 
-Publish-Module -Path $StagingRoot -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY -WhatIf
+Publish-Module -Path $StagingRoot -NuGetApiKey $env:PSGALLERY_NUGET_API_KEY
