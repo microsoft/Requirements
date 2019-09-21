@@ -7,22 +7,26 @@
 
 $ErrorActionPreference = "Stop"
 
+throw "block commit test"
+
 $RepoRoot = "$PSScriptRoot/.."
 $OutRoot = "$PSScriptRoot/integration"
 
 ."$RepoRoot/src/interface.ps1"
 
-Invoke-Requirement @{
+@{
   Describe = "Integration test output root '$OutRoot' exists"
   Test     = { Test-Path $OutRoot -PathType Container }
   Set      = { New-Item -ItemType Directory -Path $OutRoot }
-}
+} | Invoke-Requirement | Out-Null
+
+$context = @{count = 0}
 
 $Requirements = @{
   Test    = @{
     Name     = "MyName"
     Describe = "MyDescribe"
-    Test     = { $context.count++ % 2 -eq 1 }
+    Test     = { $true }
   }
   Set     = @{
     Name     = "MyName"
