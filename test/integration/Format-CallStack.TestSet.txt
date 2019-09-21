@@ -1,0 +1,6 @@
+11:35:17 [MyName] BEGIN TEST MyDescribe
+11:35:17 [MyName] END TEST => False
+11:35:17 [MyName] BEGIN SET MyDescribe
+11:35:17 [MyName] END SET
+11:35:17 [MyName] BEGIN TEST MyDescribe
+11:35:17 [MyName] END TEST => True
