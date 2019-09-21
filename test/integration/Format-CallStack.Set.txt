@@ -1,2 +1,2 @@
-11:41:32 [MyName] BEGIN SET MyDescribe
-11:41:32 [MyName] END SET
+12:02:12 [MyName] BEGIN SET MyDescribe
+12:02:12 [MyName] END SET

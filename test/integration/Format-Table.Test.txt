@@ -1,6 +1,6 @@
 
 Date                Method State Result Requirement
 ----                ------ ----- ------ -----------
-9/20/19 11:41:31 PM   Test Start        MyName
-9/20/19 11:41:32 PM   Test  Stop True   MyName
+9/21/19 12:02:12 AM   Test Start        MyName
+9/21/19 12:02:12 AM   Test  Stop True   MyName
 
