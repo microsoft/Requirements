@@ -7,8 +7,6 @@
 
 $ErrorActionPreference = "Stop"
 
-throw "block commit test"
-
 $RepoRoot = "$PSScriptRoot/.."
 $OutRoot = "$PSScriptRoot/integration"
 
