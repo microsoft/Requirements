@@ -1,5 +1,6 @@
 
-$preCommitHook = @"#/bin/bash
+$preCommitHook = @"
+#/bin/bash
 
 pwsh ./test/Checkpoint-Output.ps1
 git add ./test/integration
