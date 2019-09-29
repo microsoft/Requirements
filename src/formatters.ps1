@@ -28,7 +28,6 @@ function writeFail($timestamp, $description, $clearString) {
     $message = "$timestamp [ $symbol ] $description"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`n$message`n" -ForegroundColor $color
-    exit -1
 }
 
 $fsm = @{
@@ -44,10 +43,10 @@ $fsm = @{
             }
         }
     }
-    "Set Set Start $false"      = {
+    "Set Set Start *"           = {
         writePending @args
         @{
-            "Set Set Stop $false" = {
+            "Set Set Stop *" = {
                 writeSuccess @args
                 $fsm
             }
@@ -62,9 +61,9 @@ $fsm = @{
             }
             "TestSet Test Stop $false" = {
                 @{
-                    "TestSet Set Start $false" = {
+                    "TestSet Set Start *" = {
                         @{
-                            "TestSet Set Stop $false" = {
+                            "TestSet Set Stop *" = {
                                 @{
                                     "TestSet Validate Start $false" = {
                                         @{
@@ -114,7 +113,7 @@ function Format-Checklist {
         $requirementType = ("Test", "Set" | ? { $requirement.$_ }) -join ""
         $method = $_.Method
         $lifecycleState = $_.State
-        $successResult = [bool]$_.Result
+        $successResult = if ($method -eq "Set") { "*" } else { [bool]$_.Result }
         $stateVector = "$requirementType $method $lifecycleState $successResult"
 
         # build transition arguments

@@ -1,0 +1,2 @@
+05:22:34 [MyName] BEGIN TEST MyDescribe
+05:22:34 [MyName] END TEST => True
