@@ -1,10 +1,10 @@
-# Exemples
+# Examples
 
-This section include exemples on how you can use Requirements
+This section include examples on how you can use Requirements
 
 ##  Web Server
 
-This exemple show how to set up IIS and SSL binding with a selfsigned certificat on Windows 2016/2019 server using PowerShell 5.1.
+This example show how to set up IIS and SSL binding with a selfsigned certificat on Windows 2016/2019 server using PowerShell 5.1.
 
 To perform the operation you can simply use .\webserverinstall.ps1 as administrator
 
