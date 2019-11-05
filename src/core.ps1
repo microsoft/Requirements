@@ -29,7 +29,7 @@ function applyRequirement([Requirement]$Requirement) {
       $result = &$Requirement.Test
       [RequirementEvent]::new($Requirement, "Validate", "Stop", $result)
       if (-not $result) {
-        Write-Error "Failed to apply Requirement '$($Requirement.Name)'"
+        Write-Error "Failed to apply Requirement '$($Requirement.Describe)'"
       }
     }
   }
@@ -59,11 +59,11 @@ function sortRequirements([Requirement[]]$Requirements) {
   $stages = @()
   while ($Requirements) {
     $nextStages = $Requirements `
-    | ? { -not ($_.DependsOn | ? { $_ -notin $stages.Name }) }
+    | ? { -not ($_.DependsOn | ? { $_ -notin $stages.Namespace }) }
   if (-not $nextStages) {
     throw "Could not resolve the dependencies for Requirements with names: $($Requirements.Name -join ', ')"
   }
-  $Requirements = $Requirements | ? { $_.Name -notin $nextStages.Name }
+  $Requirements = $Requirements | ? { $_.Namespace -notin $nextStages.Namespace }
   $stages += $nextStages
 }
 $stages

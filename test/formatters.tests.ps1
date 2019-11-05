@@ -18,10 +18,10 @@ Describe "formatters" {
   Mock Get-Date { return "00:00:00" }
   $script:InDesiredState = 0
   $requirement = @{
-    Name     = "simple-requirement"
-    Describe = "Simple Requirement"
-    Test     = { $script:InDesiredState++ }
-    Set      = { }
+    Namespace = "sr"
+    Describe  = "Simple Requirement"
+    Test      = { $script:InDesiredState++ }
+    Set       = { }
   }
   $events = invoke $requirement
   $tempContainer = $PSScriptRoot
@@ -37,16 +37,16 @@ Describe "formatters" {
     $output = Get-Content $path -Raw
     Remove-Item $path
     It "Should format each line as a checklist" {
-      $output | Should -Match "^\d\d:\d\d:\d\d \[ . \] Simple Requirement"
+      $output | Should -Match "^. \d\d:\d\d:\d\d\[sr|Simple Requirement"
     }
   }
-  Context "Format-Callstack" {
+  Context "Format-Verbose" {
     $path = "$tempContainer\$(New-Guid).txt"
-    ($events | Format-CallStack) *> $path
+    ($events | Format-Verbose) *> $path
     $output = Get-Content $path
     Remove-Item $path
-    It "Should format each line as a callstack" {
-      $output | % { $_ | Should -Match "^\d\d:\d\d:\d\d \[.+\] .+" }
+    It "Should format each line" {
+      $output | % { $_ | Should -Match "^\d\d:\d\d:\d\d \w+ \w+ \w+:\w+" }
     }
     It "Should print 6 lines" {
       $output.Count | Should -Be 6

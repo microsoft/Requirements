@@ -7,25 +7,25 @@ Param()
 $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
 
-function writePending($timestamp, $description) {
+function writePending($timestamp, $namespace, $description) {
   $symbol = " "
   $color = "Yellow"
-  $message = "$timestamp [ $symbol ] $description"
+  $message = "$symbol $timestamp[$namespace|$description"
   Write-Host $message -ForegroundColor $color -NoNewline
 }
 
-function writeSuccess($timestamp, $description, $clearString) {
+function writeSuccess($timestamp, $namespace, $description, $clearString) {
   $symbol = [char]8730
   $color = "Green"
-  $message = "$timestamp [ $symbol ] $description"
+  $message = "$symbol $timestamp[$namespace|$description"
   Write-Host "`r$clearString" -NoNewline
   Write-Host "`r$message" -ForegroundColor $color
 }
 
-function writeFail($timestamp, $description, $clearString) {
+function writeFail($timestamp, $namespcae, $description, $clearString) {
   $symbol = "X"
   $color = "Red"
-  $message = "$timestamp [ $symbol ] $description"
+  $message = "$symbol $timestamp[$namespace|$description"
   Write-Host "`r$clearString" -NoNewline
   Write-Host "`n$message`n" -ForegroundColor $color
   exit -1
@@ -120,8 +120,9 @@ function Format-Checklist {
     # build transition arguments
     $timestamp = Get-Date -Date $_.Date -Format "hh:mm:ss"
     $description = $requirement.Describe
-    $clearString = ' ' * "??:??:?? [ ? ] $($previousRequirement.Describe)".Length
-    $transitionArgs = @($timestamp, $description, $clearString)
+    $namespace = $requirement.Namespace
+    $clearString = ' ' * "? ??:??:??[$($previousRequirement.Namespace)|$($previousRequirement.Describe)".Length
+    $transitionArgs = @($timestamp, $namespace, $description, $clearString)
 
     # transition FSM
     if (-not $nextFsm[$stateVector]) {
@@ -217,5 +218,28 @@ function Format-CallStack {
         }
       }
     }
+  }
+}
+
+
+function Format-Verbose {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
+  [CmdletBinding()]
+  [OutputType([string])]
+  Param(
+    # Logged Requirement lifecycle events
+    [Parameter(Mandatory, ValueFromPipeline)]
+    [Alias("Event")]
+    [RequirementEvent[]]$RequirementEvent
+  )
+
+  process {
+    $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
+    $method = $_.Method -f "{0,-8}"
+    $state = $_.State -f "{0,-5}"
+    $namespace = $_.Requirement.Namespace
+    $description = $_.Requirement.Describe
+
+    "$timestamp $method $state $namespace`:$description"
   }
 }

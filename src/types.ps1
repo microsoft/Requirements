@@ -1,6 +1,6 @@
 
-class Requirement : psobject {
-    [string] $Name
+class Requirement {
+    [string] $Namespace
     [ValidateNotNullOrEmpty()]
     [string] $Describe
     [scriptblock] $Test
