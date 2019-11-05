@@ -127,3 +127,32 @@ function Set-Requirement {
     &$Requirement.Set
   }
 }
+
+<#
+.SYNOPSIS
+    Prepends a namespace to the Requirements' name
+#>
+function Push-Namespace {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory, Position = 0)]
+    [string]$Namespace,
+    [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
+    [ValidateNotNullOrEmpty()]
+    [scriptblock]$ScriptBlock,
+    [Parameter(Mandatory, Position = 1, ParameterSetName = "requirements")]
+    [ValidateNotNullOrEmpty()]
+    [Requirement[]]$Requirement
+  )
+
+  if ($PSCmdlet.ParameterSetName -eq "scriptblock") {
+    $Requirement = &$ScriptBlock
+  }
+
+  $Requirement `
+  | % {
+    $r = $_.psobject.Copy()
+    $r.Name = $Namespace, $r.Name -join $NamespaceDelimiter
+    $r
+  }
+}

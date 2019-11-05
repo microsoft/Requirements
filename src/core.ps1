@@ -1,6 +1,14 @@
+<##
+
+#>
+
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+Param()
 
 $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
+
+$NamespaceDelimiter = ":"
 
 # idempotently applies a requirement
 function applyRequirement([Requirement]$Requirement) {
@@ -52,11 +60,11 @@ function sortRequirements([Requirement[]]$Requirements) {
   while ($Requirements) {
     $nextStages = $Requirements `
     | ? { -not ($_.DependsOn | ? { $_ -notin $stages.Name }) }
-    if (-not $nextStages) {
-      throw "Could not resolve the dependencies for Requirements with names: $($Requirements.Name -join ', ')"
-    }
-    $Requirements = $Requirements | ? { $_.Name -notin $nextStages.Name }
-    $stages += $nextStages
+  if (-not $nextStages) {
+    throw "Could not resolve the dependencies for Requirements with names: $($Requirements.Name -join ', ')"
   }
-  $stages
+  $Requirements = $Requirements | ? { $_.Name -notin $nextStages.Name }
+  $stages += $nextStages
+}
+$stages
 }

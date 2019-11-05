@@ -103,3 +103,15 @@ Describe "Set-Requirement" {
     { Invoke-Requirement $requirement } | Should -Not -Throw
   }
 }
+
+Describe "Push-Namespace" {
+  It "Should prepend the namespace to the requirements" {
+    $namespace = "MyReqs"
+    $requirements = @(
+      @{Name = "req1" },
+      @{Name = "req2" }
+    )
+    Push-Namespace -Namespace $namespace -Requirement $requirements `
+    | % { $_.Name | Should -BeLikeExactly "$namespace`:*" }
+}
+}

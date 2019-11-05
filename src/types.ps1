@@ -1,5 +1,5 @@
 
-class Requirement {
+class Requirement : psobject {
     [string] $Name
     [ValidateNotNullOrEmpty()]
     [string] $Describe
