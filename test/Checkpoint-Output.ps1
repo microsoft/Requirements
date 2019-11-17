@@ -22,20 +22,20 @@ $context = @{ count = 0 }
 
 $Requirements = @{
   Test    = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Test     = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Test      = { $true }
   }
   Set     = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Set      = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Set       = { $true }
   }
   TestSet = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Test     = { $context.count++ % 2 -eq 1 }
-    Set      = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Test      = { $context.count++ % 2 -eq 1 }
+    Set       = { $true }
   }
 }
 
