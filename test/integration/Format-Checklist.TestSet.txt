@@ -1,3 +1,0 @@
-08:21:21 [   ] MyDescribe
-                         
-08:21:21 [ √ ] MyDescribe

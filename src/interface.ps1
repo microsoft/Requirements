@@ -135,11 +135,14 @@ function Set-Requirement {
 function Push-Namespace {
   [CmdletBinding()]
   Param(
+    # The namespace identifier
     [Parameter(Mandatory, Position = 0)]
     [string]$Namespace,
+    # A scriptblock that writes Requirements to output when invoked
     [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
     [ValidateNotNullOrEmpty()]
     [scriptblock]$ScriptBlock,
+    # The array of Requirements to add under the new namespace
     [Parameter(Mandatory, Position = 1, ParameterSetName = "requirements")]
     [ValidateNotNullOrEmpty()]
     [Requirement[]]$Requirement

@@ -18,7 +18,7 @@ $OutRoot = "$PSScriptRoot/integration"
   Set      = { New-Item -ItemType Directory -Path $OutRoot }
 } | Invoke-Requirement | Out-Null
 
-$context = @{count = 0}
+$context = @{ count = 0 }
 
 $Requirements = @{
   Test    = @{
@@ -42,7 +42,7 @@ $Requirements = @{
 $Requirements.Keys `
 | % {
   $events = $Requirements[$_] | Invoke-Requirement
-  $events | Format-CallStack *> "$OutRoot/Format-CallStack.$_.txt"
   $events | Format-Checklist *> "$OutRoot/Format-Checklist.$_.txt"
   $events | Format-Table *> "$OutRoot/Format-Table.$_.txt"
+  $events | Format-Verbose *> "$OutRoot/Format-Verbose.$_.txt"
 }

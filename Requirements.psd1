@@ -64,8 +64,8 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        'Format-CallStack',
         'Format-Checklist',
+        'Format-Verbose',
         'Invoke-Requirement',
         'New-Requirement',
         'Set-Requirement',
