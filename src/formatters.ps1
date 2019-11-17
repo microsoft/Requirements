@@ -147,11 +147,7 @@ function Format-Verbose {
     )
 
     process {
-        $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
-        $method = $_.Method -f "{0,-8}"
-        $state = $_.State -f "{0,-5}"
-        $requirement = $_.Requirement
-
-        "$timestamp $method $state $requirement"
+        $timestamp = Get-Date -Date $_.Date -Format 'yyyy-MM-dd HH:mm:ss'
+        "{0} {1,-8} {2,-5} {3}" -f $timestamp, $_.Method, $_.State, $_.Requirement
     }
 }

@@ -15,7 +15,6 @@ function invoke($Requirement) {
 }
 
 Describe "formatters" {
-  Mock Get-Date { return "00:00:00" }
   $script:InDesiredState = 0
   $requirement = @{
     Namespace = "sr"
@@ -46,7 +45,7 @@ Describe "formatters" {
     $output = Get-Content $path
     Remove-Item $path
     It "Should format each line" {
-      $output | % { $_ | Should -Match "^\d\d:\d\d:\d\d \w+ \w+ .+" }
+      $output | % { $_ | Should -Match "^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d +\w+ +\w+ .+" }
     }
     It "Should print 6 lines" {
       $output.Count | Should -Be 6
