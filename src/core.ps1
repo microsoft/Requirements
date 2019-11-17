@@ -60,11 +60,11 @@ function sortRequirements([Requirement[]]$Requirements) {
   while ($Requirements) {
     $nextStages = $Requirements `
     | ? { -not ($_.DependsOn | ? { $_ -notin $stages.Namespace }) }
-  if (-not $nextStages) {
-    throw "Could not resolve the dependencies for Requirements with names: $($Requirements.Name -join ', ')"
+    if (-not $nextStages) {
+      throw "Could not resolve the dependencies for Requirements with names: $($Requirements.Namespace -join ', ')"
+    }
+    $Requirements = $Requirements | ? { $_.Namespace -notin $nextStages.Namespace }
+    $stages += $nextStages
   }
-  $Requirements = $Requirements | ? { $_.Namespace -notin $nextStages.Namespace }
-  $stages += $nextStages
-}
-$stages
+  $stages
 }

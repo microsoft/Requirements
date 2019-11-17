@@ -108,10 +108,10 @@ Describe "Push-Namespace" {
   It "Should prepend the namespace to the requirements" {
     $namespace = "MyReqs"
     $requirements = @(
-      @{Name = "req1" },
-      @{Name = "req2" }
+      @{Namespace = "req1" },
+      @{Namespace = "req2" }
     )
     Push-Namespace -Namespace $namespace -Requirement $requirements `
-    | % { $_.Name | Should -BeLikeExactly "$namespace`:*" }
-}
+    | % { $_.Namespace | Should -BeLikeExactly "$namespace`:*" }
+  }
 }
