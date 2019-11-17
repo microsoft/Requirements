@@ -19,7 +19,7 @@ function New-Requirement {
     # The unique identifier for the Requirement
     [Parameter(ParameterSetName = "Script")]
     [Parameter(ParameterSetName = "Dsc")]
-    [string] $Name,
+    [string] $Namespace,
     # A description of the Requirement
     [Parameter(Mandatory, ParameterSetName = "Script")]
     [Parameter(Mandatory, ParameterSetName = "Dsc")]
@@ -52,7 +52,7 @@ function New-Requirement {
   switch ($PSCmdlet.ParameterSetName) {
     "Script" {
       [Requirement]@{
-        Name      = $Name
+        Namespace = $Namespace
         Describe  = $Describe
         Test      = $Test
         Set       = $Set
@@ -66,7 +66,7 @@ function New-Requirement {
         Property   = $Property
       }
       [Requirement]@{
-        Name      = $Name
+        Name      = $Namespace
         Describe  = $Describe
         Test      = { Invoke-DscResource -Method "Test" @dscParams }.GetNewClosure()
         Set       = { Invoke-DscResource -Method "Set" @dscParams }.GetNewClosure()
@@ -125,5 +125,37 @@ function Set-Requirement {
 
   if ($PSCmdlet.ShouldProcess($Requirement, "Set")) {
     &$Requirement.Set
+  }
+}
+
+<#
+.SYNOPSIS
+    Prepends a namespace to the Requirements' name
+#>
+function Push-Namespace {
+  [CmdletBinding()]
+  Param(
+    # The namespace identifier
+    [Parameter(Mandatory, Position = 0)]
+    [string]$Namespace,
+    # A scriptblock that writes Requirements to output when invoked
+    [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
+    [ValidateNotNullOrEmpty()]
+    [scriptblock]$ScriptBlock,
+    # The array of Requirements to add under the new namespace
+    [Parameter(Mandatory, Position = 1, ParameterSetName = "requirements")]
+    [ValidateNotNullOrEmpty()]
+    [Requirement[]]$Requirement
+  )
+
+  if ($PSCmdlet.ParameterSetName -eq "scriptblock") {
+    $Requirement = &$ScriptBlock
+  }
+
+  $Requirement `
+  | % {
+    $r = $_.psobject.Copy()
+    $r.Namespace = $Namespace, $r.Namespace -join $NamespaceDelimiter
+    $r
   }
 }

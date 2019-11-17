@@ -85,7 +85,6 @@ Describe "Core" {
             $script:CallTestOnEachRequirement = 0
             $requirements = 1..3 | % {
                 @{
-                    Name     = $_
                     Describe = "Simple Requirement"
                     Test     = { $script:CallTestOnEachRequirement++ % 2 }
                     Set      = { $false }
@@ -93,64 +92,6 @@ Describe "Core" {
             }
             applyRequirements $requirements
             $script:CallTestOnEachRequirement | Should -Be 6
-        }
-    }
-    Context "sortRequirements" {
-        It "Should sort an array of requirements into topological order" {
-            $sorted = sortRequirements @(
-                @{
-                    Name      = "third"
-                    Describe  = "Simple Requirement"
-                    Test      = { }
-                    Set       = { }
-                    DependsOn = "first", "second"
-                },
-                @{
-                    Name     = "first"
-                    Describe = "Simple Requirement"
-                    Test     = { }
-                    Set      = { }
-                },
-                @{
-                    Name      = "second"
-                    Describe  = "Simple Requirement"
-                    Test      = { }
-                    Set       = { }
-                    DependsOn = "first"
-                }
-            )
-            [string[]]$names = $sorted | % Name
-            0..($sorted.Count - 1) | % {
-                $i, $requirement = $_, $sorted[$_]
-                $requirement.DependsOn `
-                | % { $names.IndexOf($_) | Should -BeLessThan $i }
-            }
-        }
-        It "Should throw an error if there are unresolvable dependencies" {
-            {
-                sortRequirements @(
-                    @{
-                        Name      = "third"
-                        Describe  = "Simple Requirement"
-                        Test      = { }
-                        Set       = { }
-                        DependsOn = "first", "second"
-                    },
-                    @{
-                        Name     = "first"
-                        Describe = "Simple Requirement"
-                        Test     = { }
-                        Set      = { }
-                    },
-                    @{
-                        Name      = "second"
-                        Describe  = "Simple Requirement"
-                        Test      = { }
-                        Set       = { }
-                        DependsOn = "first", "third"
-                    }
-                )
-            } | Should -Throw
         }
     }
 }

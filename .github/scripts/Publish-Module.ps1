@@ -7,7 +7,7 @@ $InformationPreference = "Continue"
 
 # static version parts
 $Major = 2
-$Minor = 2
+$Minor = 3
 
 # paths
 $RepoRoot = "$PSScriptRoot/../.."

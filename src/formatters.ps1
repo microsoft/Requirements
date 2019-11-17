@@ -7,27 +7,28 @@ Param()
 $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
 
-function writePending($timestamp, $description) {
+function writePending($timestamp, $requirement) {
     $symbol = " "
     $color = "Yellow"
-    $message = "$timestamp [ $symbol ] $description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host $message -ForegroundColor $color -NoNewline
 }
 
-function writeSuccess($timestamp, $description, $clearString) {
+function writeSuccess($timestamp, $requirement, $clearString) {
     $symbol = [char]8730
     $color = "Green"
-    $message = "$timestamp [ $symbol ] $description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`r$message" -ForegroundColor $color
 }
 
-function writeFail($timestamp, $description, $clearString) {
+function writeFail($timestamp, $requirement, $clearString) {
     $symbol = "X"
     $color = "Red"
-    $message = "$timestamp [ $symbol ] $description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`n$message`n" -ForegroundColor $color
+    exit -1
 }
 
 $fsm = @{
@@ -118,9 +119,8 @@ function Format-Checklist {
 
         # build transition arguments
         $timestamp = Get-Date -Date $_.Date -Format "hh:mm:ss"
-        $description = $requirement.Describe
-        $clearString = ' ' * "??:??:?? [ ? ] $($previousRequirement.Describe)".Length
-        $transitionArgs = @($timestamp, $description, $clearString)
+        $clearString = ' ' * "? ??:??:?? $previousRequirement".Length
+        $transitionArgs = @($timestamp, $requirement, $clearString)
 
         # transition FSM
         if (-not $nextFsm[$stateVector]) {
@@ -135,15 +135,10 @@ cmdlet, then this is probably a bug in Format-Checklist.
     }
 }
 
-<#
-.SYNOPSIS
-  Formats every log event with metadata, including a stack of requirement names when using nested Requirements
-.NOTES
-  Uses Write-Host
-#>
-function Format-CallStack {
+function Format-Verbose {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
     [CmdletBinding()]
+    [OutputType([string])]
     Param(
         # Logged Requirement lifecycle events
         [Parameter(Mandatory, ValueFromPipeline)]
@@ -151,70 +146,8 @@ function Format-CallStack {
         [RequirementEvent[]]$RequirementEvent
     )
 
-    begin {
-        $context = [Stack[string]]::new()
-    }
-
     process {
-        $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
-        $name = $_.Requirement.Name
-        $description = $_.Requirement.Describe
-        $method, $state, $result = $_.Method, $_.State, $_.Result
-        switch ($method) {
-            "Test" {
-                switch ($state) {
-                    "Start" {
-                        $context.Push($name)
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] BEGIN TEST $description"
-                    }
-                    "Stop" {
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] END TEST => $result"
-                        $context.Pop() | Out-Null
-                    }
-                }
-            }
-            "Set" {
-                switch ($state) {
-                    "Start" {
-                        $context.Push($name)
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] BEGIN SET $description"
-                    }
-                    "Stop" {
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] END SET"
-                        $context.Pop() | Out-Null
-                    }
-                }
-            }
-            "Validate" {
-                switch ($state) {
-                    "Start" {
-                        $context.Push($name)
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] BEGIN TEST $description"
-                    }
-                    "Stop" {
-                        $callstack = $context.ToArray()
-                        [array]::Reverse($callstack)
-                        $serialized = $callstack -join ">"
-                        Write-Host "$timestamp [$serialized] END TEST => $result"
-                        $context.Pop() | Out-Null
-                    }
-                }
-            }
-        }
+        $timestamp = Get-Date -Date $_.Date -Format 'yyyy-MM-dd HH:mm:ss'
+        "{0} {1,-8} {2,-5} {3}" -f $timestamp, $_.Method, $_.State, $_.Requirement
     }
 }

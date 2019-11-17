@@ -18,31 +18,31 @@ $OutRoot = "$PSScriptRoot/integration"
   Set      = { New-Item -ItemType Directory -Path $OutRoot }
 } | Invoke-Requirement | Out-Null
 
-$context = @{count = 0}
+$context = @{ count = 0 }
 
 $Requirements = @{
   Test    = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Test     = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Test      = { $true }
   }
   Set     = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Set      = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Set       = { $true }
   }
   TestSet = @{
-    Name     = "MyName"
-    Describe = "MyDescribe"
-    Test     = { $context.count++ % 2 -eq 1 }
-    Set      = { $true }
+    Namespace = "ns"
+    Describe  = "MyDescribe"
+    Test      = { $context.count++ % 2 -eq 1 }
+    Set       = { $true }
   }
 }
 
 $Requirements.Keys `
 | % {
   $events = $Requirements[$_] | Invoke-Requirement
-  $events | Format-CallStack *> "$OutRoot/Format-CallStack.$_.txt"
   $events | Format-Checklist *> "$OutRoot/Format-Checklist.$_.txt"
   $events | Format-Table *> "$OutRoot/Format-Table.$_.txt"
+  $events | Format-Verbose *> "$OutRoot/Format-Verbose.$_.txt"
 }

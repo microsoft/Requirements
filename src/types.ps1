@@ -1,13 +1,18 @@
 
 class Requirement {
-    [string] $Name
+    [string] $Namespace
     [ValidateNotNullOrEmpty()]
     [string] $Describe
     [scriptblock] $Test
     [scriptblock] $Set
     [string[]] $DependsOn = @()
     [string] ToString() {
-        return $this.Name
+        if ($this.Namespace) {
+            return $this.Namespace + ">" + $this.Describe
+        }
+        else {
+            return $this.Describe
+        }
     }
 }
 
