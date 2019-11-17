@@ -2,7 +2,7 @@
 - [Overview](#overview)
   - [What is a Requirement](#what-is-a-requirement)
   - [Why Requirements](#why-requirements)
-    - [Exponentially simpler configurations](#exponentially-simpler-configurations)
+    - [Code against the Desired State](#code-against-the-desired-state)
     - [Generically define Requirements](#generically-define-requirements)
   - [Comparison to DSC](#comparison-to-dsc)
 - [Quickstart](#quickstart)
@@ -12,7 +12,6 @@
 - [Advanced Configurations](#advanced-configurations)
   - [Types of Requirements](#types-of-requirements)
     - [Standard Requirement](#standard-requirement)
-    - [Logging Requirement](#logging-requirement)
     - [Validation Requirements](#validation-requirements)
     - [Idempotent `Set` Requirements](#idempotent-set-requirements)
   - [Patterns](#patterns)
@@ -25,7 +24,7 @@
 - [Formatting the logs](#formatting-the-logs)
   - [`Format-Table`](#format-table)
   - [`Format-Checklist`](#format-checklist)
-  - [`Format-Callstack`](#format-callstack)
+  - [`Format-Verbose`](#format-verbose)
 - [Contributing](#contributing)
 
 # Overview
@@ -33,7 +32,7 @@ Requirements is a PowerShell Gallery module for declaratively describing a syste
 
 The background motivation and implementation design are discussed in detail in [Declarative Idempotency](https://itnext.io/declarative-idempotency-aaa07c6dd9a0?source=friends_link&sk=f0464e8e29525b23aabe766bfb557dd7).
 
-Trevor Sullivan provides a good overview and tutorial [video](https://www.youtube.com/watch?v=efRnjlZKCGw) about Requirements.
+Trevor Sullivan provides a good overview and (slightly outdated) tutorial [video](https://www.youtube.com/watch?v=efRnjlZKCGw) about Requirements.
 
 ## What is a Requirement
 A "Requirement" is a single atomic component of a system configuration.  For a system to be in its desired state, all Requirements in the system must be in a desired state.
@@ -45,7 +44,7 @@ A Requirement is an object defined by three properties:
 
 ## Why Requirements
 
-### Exponentially simpler configurations
+### Code against the Desired State
 In DevOps, you may be managing a fleet of servers, containers, cloud resources, files on disk, or many other kinds of components in a heterogeneous system.  Lets say you have *n* components in your system and every component is either in a `GOOD` or `BAD` state.  You have two options:
 * You can try and account for every possible configuration of your system and transition between those states, but then you will have *2**n* possible states to manage.
 * You can only account for the desired state of each individual component, so you will only have *n* states to account for.  Much simpler!
@@ -53,10 +52,10 @@ In DevOps, you may be managing a fleet of servers, containers, cloud resources, 
 ### Generically define Requirements
 If you only manage cloud resources, then try to use Terraform, ARM, or CloudFormation.  If you only manage kubernetes resources, then try and use Helm.  These are domain-specific frameworks for managing the desired state of resources and are best suited for their task.
 
-However, you will often find you have complex configurations, such as configurations that can only be described in PowerShell.  You may even macroconfigurations that consist of one or more Terraform templates.  In this case you will probably want something more generic to glue your configurations together without sacrificing the declarative desired state paradigm.  This is where Requirements comes in.
+However, you will often find you have complex configurations, such as configurations that can only be described in PowerShell.  You may even have macroconfigurations that consist of one or more Terraform templates.  In this case you will probably want something more generic to glue your configurations together without sacrificing the declarative desired state paradigm.  This is where Requirements comes in.
 
 ## Comparison to DSC
-Desired State Configurations allow you to declaratively describe a configuration then let the configuration manager handle with setting the configuration to its desired state.  This pattern from the outside may seem similar to Requirements, but there are crucial differences.
+Desired State Configurations allow you to declaratively describe a configuration, then let the local configuration manager handle with setting the configuration to its desired state.  This pattern from the outside may seem similar to Requirements, but there are crucial differences.
 
 DSC is optimized for handling *many* configurations *asynchronously*.  For example, applying a configuration in parallel to multiple nodes.  In contrast, Requirements applies a *single* configuration *synchronously*.  This enables usage in different scenarios, including:
 * CI/CD scripts
@@ -123,15 +122,6 @@ As you learned [previously](#what-is-a-requirement), Requirements consist of `De
 ### Standard Requirement
 This is the kind you are already [familiar with](#what-is-a-requirement).  It includes both a `Test` and `Set`.
 
-### Logging Requirement
-If you leave out both the `Test` and `Set` blocks, you will only have a logged message.
-
-```powershell
-@{
-    Describe = "Congratulations on getting this far"
-}
-```
-
 ### Validation Requirements
 If you wish to assert that a precondition is met before continuing, you can leave out the `Set` block.  This is useful for [Defensive programming](https://itnext.io/defensive-powershell-with-validation-attributes-8e7303e179fd?source=friends_link&sk=14765ca9554709a77f8af7d73612ef5b), or when a Requirement requires manual steps.
 
@@ -153,10 +143,10 @@ Sometimes, your `Set` block is already idempotent and an associated `Test` block
 ```
 
 ## Patterns
-Some people find the declarative nature of Requirements hard to scale, as they try and explicitly define every Requirement in a single array literal; however, Requirements can be handled like any other PowerShell object.  Here are some examples of patterns for managing Requirements.
+Some people have trouble managing large configurations with Requirements because they try and explicitly define a single array literal of Requirements; however, this is unnecessary and Requirements can be handled like any other PowerShell object.  Here are some examples of patterns for managing Requirements.
 
 ### Avoiding state with selectors
-Requirements should strongly avoid maintaining internal state.  Requirements is for enforcing declarative programming and maintaining state between Requirements breaks is an imperative loophole that breaks the declarative paradigm.
+Requirements should strongly avoid maintaining internal state.  Requirements is for enforcing declarative programming, whereas maintaining state is an imperative loophole that breaks the declarative paradigm.
 
 Instead, use **selectors** to easily derive up-to-date properties of the system using unit-testable functions.
 
@@ -169,7 +159,7 @@ function Select-StorageAccountName([string]$EnvName) { ... }
 
 <#
 .SYNOPSIS
-  Ensures a storage ccount exists in Azure
+  Returns a Requirement that ensures a storage ccount exists in Azure
 #>
 function New-StorageAccountRequirement {
     @{
@@ -181,7 +171,7 @@ function New-StorageAccountRequirement {
 ```
 
 ### Reusable requirements
-Reusability is required for DRY code.  You can wrap Requirements in a parameterized function or script--
+You can wrap Requirements in a parameterized function or script to avoid redifining Requirements--
 
 ```powershell
 function New-ResourceGroupRequirement {
@@ -198,8 +188,8 @@ function New-ResourceGroupRequirement {
         }
         @{
             Describe = "Resource Group '$Name' exists"
-            Test     = {Get-AzResourceGroup -Name $Name -ErrorAction SilentlyContinue }
-            Set      = { New-AzResourceGroup -Name $Name -Location $Location}
+            Test     = { Get-AzResourceGroup -Name $Name -ErrorAction SilentlyContinue }
+            Set      = { New-AzResourceGroup -Name $Name -Location $Location }
         }
     }
 }
@@ -231,7 +221,7 @@ foreach ($resourceId in 1..3) {
     @{
         Describe = "Resource $resourceId is present in the system"
         Test     = { $mySystem -contains $resourceId }.GetNewClosure()
-        Set      = {$mySystem.Add($resourceId) | Out-Null; Start-Sleep 1}.GetNewClosure()
+        Set      = { $mySystem.Add($resourceId) | Out-Null; Start-Sleep 1 }.GetNewClosure()
     }
 }
 ```
@@ -286,13 +276,13 @@ cloud         Terraform is deployed
 ```
 
 ### Isomorphic Enforcement
-Isomorphic execution means that our Requirements are enforced the same regardless of what context they are enforced.  You will want your Requirements to run in a CICD pipeline for safe deployment practices and run manually from your local machine for development purposes, but in both contexts the Requirements should run exactly the same.
+Isomorphic execution means that our Requirements are enforced the same regardless of what context they are enforced in.  You will want your Requirements to run in a CICD pipeline for safe deployment practices and run manually from your local machine for development purposes, but in both contexts the Requirements should run exactly the same.
 
 We will accomplish this by implementing Separation of Concerns, separating our Requirement definitions from our execution logic:
 * `myrequirements.ps1`, which will return an array of Requirements.
-* `Invoke-Callstack.ps1`, which will be called in a CICD pipeline and write verbose status information to the output stream.
+* `Invoke-Verbose.ps1`, which will be called in a CICD pipeline and write verbose status information to the output stream.
     ```powershell
-    ./myrequirements.ps1 | Invoke-Requirement | Format-Callstack
+    ./myrequirements.ps1 | Invoke-Requirement | Format-Verbose
     ```
 * `Invoke-Checklist.ps1`, which will be called in a console and interactively write to the host.
     ```powershell
@@ -345,10 +335,10 @@ Validate      Stop Resource 1 6/12/2019 12:00:26 PM
 
 ![Format-Checklist output](https://raw.githubusercontent.com/microsoft/requirements/master/imgs/checklist.png)
 
-## `Format-Callstack`
-Unlike `Format-Checklist`, `Format-Callstack` prints all log events and includes metadata.  For complex use cases, you can define nested `Requirement`s (`Requirement`s that contain more `Requirement`s in their `Set` block).  `Format-Callstack` will print the stack of `Requirement` names of each `Requirement` as its processed.
+## `Format-Verbose`
+Unlike `Format-Checklist`, `Format-Verbose` prints all log events and includes metadata.  For complex use cases, you can define nested `Requirement`s (`Requirement`s that contain more `Requirement`s in their `Set` block).  `Format-Verbose` will print the stack of `Requirement` names of each `Requirement` as its processed.
 
-![Format-Callstack output](https://raw.githubusercontent.com/microsoft/requirements/master/imgs/callstack.png)
+![Format-Verbose output](https://raw.githubusercontent.com/microsoft/requirements/master/imgs/callstack.png)
 
 # Contributing
 
