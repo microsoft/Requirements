@@ -1,2 +1,2 @@
-01:14:36 Set Start ns:MyDescribe
-01:14:36 Set Stop ns:MyDescribe
+01:32:39 Set Start ns>MyDescribe
+01:32:39 Set Stop ns>MyDescribe

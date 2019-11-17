@@ -7,25 +7,25 @@ Param()
 $ErrorActionPreference = "Stop"
 ."$PSScriptRoot\types.ps1"
 
-function writePending($timestamp, $namespace, $description) {
+function writePending($timestamp, $requirement) {
     $symbol = " "
     $color = "Yellow"
-    $message = "$symbol $timestamp[$namespace|$description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host $message -ForegroundColor $color -NoNewline
 }
 
-function writeSuccess($timestamp, $namespace, $description, $clearString) {
+function writeSuccess($timestamp, $requirement, $clearString) {
     $symbol = [char]8730
     $color = "Green"
-    $message = "$symbol $timestamp[$namespace|$description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`r$message" -ForegroundColor $color
 }
 
-function writeFail($timestamp, $namespcae, $description, $clearString) {
+function writeFail($timestamp, $requirement, $clearString) {
     $symbol = "X"
     $color = "Red"
-    $message = "$symbol $timestamp[$namespace|$description"
+    $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`n$message`n" -ForegroundColor $color
     exit -1
@@ -119,10 +119,8 @@ function Format-Checklist {
 
         # build transition arguments
         $timestamp = Get-Date -Date $_.Date -Format "hh:mm:ss"
-        $description = $requirement.Describe
-        $namespace = $requirement.Namespace
-        $clearString = ' ' * "? ??:??:??[$($previousRequirement.Namespace)|$($previousRequirement.Describe)".Length
-        $transitionArgs = @($timestamp, $namespace, $description, $clearString)
+        $clearString = ' ' * "? ??:??:?? $previousRequirement".Length
+        $transitionArgs = @($timestamp, $requirement, $clearString)
 
         # transition FSM
         if (-not $nextFsm[$stateVector]) {
@@ -152,9 +150,8 @@ function Format-Verbose {
         $timestamp = Get-Date -Date $_.Date -Format 'hh:mm:ss'
         $method = $_.Method -f "{0,-8}"
         $state = $_.State -f "{0,-5}"
-        $namespace = $_.Requirement.Namespace
-        $description = $_.Requirement.Describe
+        $requirement = $_.Requirement
 
-        "$timestamp $method $state $namespace`:$description"
+        "$timestamp $method $state $requirement"
     }
 }
