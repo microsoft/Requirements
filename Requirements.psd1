@@ -68,6 +68,7 @@
         'Format-Verbose',
         'Invoke-Requirement',
         'New-Requirement',
+        'Push-Namespace',
         'Set-Requirement',
         'Test-Requirement'
     )
