@@ -1,3 +1,10 @@
+### Breaking changes
+#### v2.3
+* Requirement nesting is no longer supported.  Requirements are supposed to be atomic components of a system, and by definition, atomic components cannot contain other atomic components and still be atomic. Recommendation is to migrate to our [supported patterns](#patterns).
+* `Format-Callstack`, the formatter for nested Requirements, is no longer supported.  Recommendation is to migrate to [`Format-Verbose`](#format-verbose).
+* `Name` is no longer a supported property on Requirements.  Recommendation is to migrate to [namespaces](#managing-large-configurations-with-namespaces).
+
+-----
 
 - [Overview](#overview)
   - [What is a Requirement](#what-is-a-requirement)
