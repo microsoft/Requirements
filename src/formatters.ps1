@@ -27,8 +27,7 @@ function writeFail($timestamp, $requirement, $clearString) {
     $color = "Red"
     $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
-    Write-Host "`n$message`n" -ForegroundColor $color
-    exit -1
+    Write-Host "`r$message" -ForegroundColor $color
 }
 
 $fsm = @{
@@ -41,6 +40,7 @@ $fsm = @{
             }
             "Test Test Stop $false" = {
                 writeFail @args
+                $fsm
             }
         }
     }
@@ -74,6 +74,7 @@ $fsm = @{
                                             }
                                             "TestSet Validate Stop $false" = {
                                                 writeFail @args
+                                                $fsm
                                             }
                                         }
                                     }
