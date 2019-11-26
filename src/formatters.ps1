@@ -28,7 +28,6 @@ function writeFail($timestamp, $requirement, $clearString) {
     $message = "$symbol $timestamp $requirement"
     Write-Host "`r$clearString" -NoNewline
     Write-Host "`n$message`n" -ForegroundColor $color
-    exit -1
 }
 
 $fsm = @{
