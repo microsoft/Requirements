@@ -44,12 +44,12 @@ Describe "Core" {
             }
             $script:SetIfNoTest | Should -BeTrue
         }
-        It "Should not 'Test' if no 'Set' is provided" {
+        It "Should 'Test' once if no 'Set' is provided" {
             $script:NotTestIfNoSet = 0
             applyRequirement @{
                 Describe = "Simple Requirement"
                 Test     = { $script:NotTestIfNoSet++ }
-            }
+            } -ErrorAction SilentlyContinue
             $script:NotTestIfNoSet | Should -Be 1
         }
         It "Should output all log events" {
