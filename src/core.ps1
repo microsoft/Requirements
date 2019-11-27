@@ -8,7 +8,9 @@ $ErrorActionPreference = "Stop"
 $NamespaceDelimiter = ":"
 
 # idempotently applies a requirement
-function applyRequirement([Requirement]$Requirement) {
+function applyRequirement {
+  [CmdletBinding()]
+  Param([Requirement]$Requirement)
   switch (("Test", "Set" | ? { $Requirement.$_ }) -join "-") {
     "Test" {
       [RequirementEvent]::new($Requirement, "Test", "Start")
