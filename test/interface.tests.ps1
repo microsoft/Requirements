@@ -5,6 +5,7 @@ $RepoRoot = "$PSScriptRoot/.."
 $SourceRoot = "$RepoRoot/src"
 ."$SourceRoot\interface.ps1"
 
+# Detect Admin on downlevel Powershell
 $PlatformLacksDscSupport = $PSVersionTable.PSEdition -eq "Core"
 if (-not $PlatformLacksDscSupport) {
   $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
