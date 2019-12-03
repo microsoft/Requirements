@@ -104,14 +104,14 @@ Describe "Set-Requirement" {
   }
 }
 
-Describe "Push-Namespace" {
+Describe "New-RequirementGroup" {
   It "Should prepend the namespace to the requirements" {
     $namespace = "MyReqs"
     $requirements = @(
       @{Namespace = "req1" },
       @{Namespace = "req2" }
     )
-    Push-Namespace -Namespace $namespace -Requirement $requirements `
+    New-RequirementGroup -Namespace $namespace -Requirement $requirements `
     | % { $_.Namespace | Should -BeLikeExactly "$namespace`:*" }
   }
 }

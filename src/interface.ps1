@@ -130,10 +130,10 @@ function Set-Requirement {
 
 <#
 .SYNOPSIS
-    Prepends a namespace to the Requirements' name
+    Creates a Group of Requirements
 #>
-function Push-Namespace {
-  [CmdletBinding()]
+function New-RequirementGroup {
+  [CmdletBinding(SupportsShouldProcess)]
   Param(
     # The namespace identifier
     [Parameter(Mandatory, Position = 0)]
@@ -142,7 +142,7 @@ function Push-Namespace {
     [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
     [ValidateNotNullOrEmpty()]
     [scriptblock]$ScriptBlock,
-    # The array of Requirements to add under the new namespace
+    # The array of Requirements to add under the new Group
     [Parameter(Mandatory, Position = 1, ParameterSetName = "requirements")]
     [ValidateNotNullOrEmpty()]
     [Requirement[]]$Requirement
@@ -159,3 +159,6 @@ function Push-Namespace {
     $r
   }
 }
+
+# Set alias to ensure backwards compatibility
+New-Alias -Name New-RequirementGroup -Value Push-Namespace
