@@ -137,7 +137,9 @@ function New-RequirementGroup {
   Param(
     # The namespace identifier
     [Parameter(Mandatory, Position = 0)]
-    [string]$Namespace,
+    [Alias("Namespace")]
+    [ValidateNotNullOrEmpty()]
+    [string]$Name,
     # A scriptblock that writes Requirements to output when invoked
     [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
     [ValidateNotNullOrEmpty()]

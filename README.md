@@ -207,7 +207,7 @@ function New-ResourceGroupRequirement {
         [string]$Location
     )
 
-    New-RequirementGroup "rg" {
+    New-RequirementGroup "rg" -ScriptBlock {
         @{
             Describe = "Logged in to Azure"
             Test     = { Get-AzAccount }
@@ -283,14 +283,14 @@ New-RequirementGroup "local" {
             Set      = { ... }
         }
     }
-} | Invoke-Requirement | Format-Checklist
+}
 New-RequirementGroup "cloud" {
     @{
         Describe = "Terraform is deployed"
         Test     = { ... }
         Set      = { ... }
     }
-} | Invoke-Requirement | Format-Checklist
+}
 ```
 
 The above example would result in the Requirements below.
