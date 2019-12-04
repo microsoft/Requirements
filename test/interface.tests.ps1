@@ -112,6 +112,7 @@ Describe "New-RequirementGroup" {
       @{Namespace = "req1" },
       @{Namespace = "req2" }
     )
+
     New-RequirementGroup -Namespace $namespace -Requirement $requirements `
     | % { $_.Namespace | Should -BeLikeExactly "$namespace`:*" }
   }
