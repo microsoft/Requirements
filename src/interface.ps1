@@ -133,7 +133,8 @@ function Set-Requirement {
     Creates a Group of Requirements
 #>
 function New-RequirementGroup {
-  [CmdletBinding(SupportsShouldProcess)]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
+  [CmdletBinding()]
   [Alias("Push-Namespace")]
   Param(
     # The namespace identifier
