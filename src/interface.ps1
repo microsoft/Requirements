@@ -134,6 +134,7 @@ function Set-Requirement {
 #>
 function New-RequirementGroup {
   [CmdletBinding(SupportsShouldProcess)]
+  [Alias("Push-Namespace")]
   Param(
     # The namespace identifier
     [Parameter(Mandatory, Position = 0)]
@@ -161,6 +162,3 @@ function New-RequirementGroup {
     $r
   }
 }
-
-# Set alias to ensure backwards compatibility
-New-Alias -Name New-RequirementGroup -Value Push-Namespace
