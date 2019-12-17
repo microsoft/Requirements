@@ -130,19 +130,23 @@ function Set-Requirement {
 
 <#
 .SYNOPSIS
-    Prepends a namespace to the Requirements' name
+    Creates a Group of Requirements
 #>
-function Push-Namespace {
+function New-RequirementGroup {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
   [CmdletBinding()]
+  [Alias("Push-Namespace")]
   Param(
     # The namespace identifier
     [Parameter(Mandatory, Position = 0)]
-    [string]$Namespace,
+    [Alias("Namespace")]
+    [ValidateNotNullOrEmpty()]
+    [string]$Name,
     # A scriptblock that writes Requirements to output when invoked
     [Parameter(Mandatory, Position = 1, ParameterSetName = "scriptblock")]
     [ValidateNotNullOrEmpty()]
     [scriptblock]$ScriptBlock,
-    # The array of Requirements to add under the new namespace
+    # The array of Requirements to add under the new Group
     [Parameter(Mandatory, Position = 1, ParameterSetName = "requirements")]
     [ValidateNotNullOrEmpty()]
     [Requirement[]]$Requirement
