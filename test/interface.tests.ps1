@@ -114,6 +114,19 @@ Describe "New-RequirementGroup" {
     )
 
     New-RequirementGroup -Namespace $namespace -Requirement $requirements `
-    | % { $_.Namespace | Should -BeLikeExactly "$namespace`:*" }
+    | % { $_.Namespace | Should -BeLikeExactly "$namespace`:req*" }
+  }
+
+  It "Should support nested requirement groups" {
+    $requirements = (
+      New-RequirementGroup -Name "Parentgroup" {
+        New-RequirementGroup -Name "childgroup" {
+          New-Requirement -Namespace "requirement1" -Describe "This a requirement"
+        }
+      }
+    )
+
+    $requirements `
+    | % { $_.Namespace | Should -Be "Parentgroup:childgroup:requirement1" }
   }
 }

@@ -159,7 +159,7 @@ function New-RequirementGroup {
   $Requirement `
   | % {
     $r = $_.psobject.Copy()
-    $r.Namespace = $Namespace, $r.Namespace -join $NamespaceDelimiter
+    $r.Namespace = $Name, $r.Namespace -join $NamespaceDelimiter
     $r
   }
 }
