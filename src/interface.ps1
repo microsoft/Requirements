@@ -66,7 +66,7 @@ function New-Requirement {
         Property   = $Property
       }
       [Requirement]@{
-        Name      = $Namespace
+        Namespace = $Namespace
         Describe  = $Describe
         Test      = { Invoke-DscResource -Method "Test" @dscParams }.GetNewClosure()
         Set       = { Invoke-DscResource -Method "Set" @dscParams }.GetNewClosure()
