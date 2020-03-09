@@ -33,7 +33,7 @@ Describe "New-Requirement" {
     }
   }
   Context "'Dsc' parameter set" {
-    It "Should not be empty" {
+    It "Should not be empty" -Skip:$PlatformLacksDscSupport {
       $requirement = @{
         Describe     = "My Dsc Requirement 1"
         ResourceName = "File"
@@ -58,7 +58,7 @@ Describe "Invoke-Requirement" {
     }
   }
   Context "DSC Requirement" {
-    It "Should apply the DSC resource" {
+    It "Should apply the DSC resource" -Skip:$PlatformLacksDscSupport {
       $tempFilePath = "$env:TEMP\_dsctest_$(New-Guid).txt"
       $content = "Hello world"
       $params = @{
