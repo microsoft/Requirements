@@ -115,4 +115,20 @@ Describe "New-RequirementGroup" {
     New-RequirementGroup -Namespace $namespace -Requirement $requirements `
     | % { $_.Namespace | Should -BeLikeExactly "$namespace`:*" }
   }
+  It "Should not contain multiple colons in a row" {
+    $requirements = New-RequirementGroup "a" {
+      New-RequirementGroup "b" {
+        @{
+          Describe = "1"
+        }
+        @{
+          Describe = "2"
+        }
+      }
+      @{
+        Describe = "3"
+      }
+    }
+    $requirements -join "|" | Should -Be "a:b>1|a:b>2|a>3"
+  }
 }
