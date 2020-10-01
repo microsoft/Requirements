@@ -152,26 +152,3 @@ function Format-Verbose {
         "{0} {1,-8} {2,-5} {3}" -f $timestamp, $_.Method, $_.State, $_.Requirement
     }
 }
-
-function Format-Simple {
-    [CmdletBinding()]
-    Param(
-        # Logged Requirement lifecycle events
-        [Parameter(Mandatory, ValueFromPipeline)]
-        [Alias("Event")]
-        [RequirementEvent[]]$RequirementEvent
-    )
-
-
-    begin {
-
-    }
-
-    process {
-
-    }
-
-    end {
-
-    }
-}
