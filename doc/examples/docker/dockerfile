@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS buildPowerShellCore
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+
+COPY installmodule.ps1 /installmodule.ps1
+
+RUN powershell .\installmodule.ps1
+
+COPY webserver.ps1 /webserver.ps1
+
+RUN powershell .\webserver.ps1
