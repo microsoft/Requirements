@@ -96,7 +96,7 @@ function Format-Checklist {
     [CmdletBinding()]
     Param(
         # Logged Requirement lifecycle events
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory, ValueFromPipeline, Position = 0)]
         [Alias("Event")]
         [RequirementEvent[]]$RequirementEvent
     )
@@ -107,30 +107,32 @@ function Format-Checklist {
     }
 
     process {
-        $requirement = $_.Requirement
+        foreach ($event in $RequirementEvent) {
+            $requirement = $event.Requirement
 
-        # build state vector
-        $requirementType = ("Test", "Set" | ? { $requirement.$_ }) -join ""
-        $method = $_.Method
-        $lifecycleState = $_.State
-        $successResult = if ($method -eq "Set") { "*" } else { [bool]$_.Result }
-        $stateVector = "$requirementType $method $lifecycleState $successResult"
+            # build state vector
+            $requirementType = ("Test", "Set" | Where-Object { $requirement.$_ }) -join ""
+            $method = $event.Method
+            $lifecycleState = $event.State
+            $successResult = if ($method -eq "Set") { "*" } else { [bool]$event.Result }
+            $stateVector = "$requirementType $method $lifecycleState $successResult"
 
-        # build transition arguments
-        $timestamp = Get-Date -Date $_.Date -Format "hh:mm:ss"
-        $clearString = ' ' * "? ??:??:?? $previousRequirement".Length
-        $transitionArgs = @($timestamp, $requirement, $clearString)
+            # build transition arguments
+            $timestamp = Get-Date -Date $event.Date -Format "hh:mm:ss"
+            $clearString = ' ' * "? ??:??:?? $previousRequirement".Length
+            $transitionArgs = @($timestamp, $requirement, $clearString)
 
-        # transition FSM
-        if (-not $nextFsm[$stateVector]) {
-            throw @"
+            # transition FSM
+            if (-not $nextFsm[$stateVector]) {
+                throw @"
 Format-Checklist has reached an unexpected state '$stateVector'.
 If you are piping the output of Invoke-Requirement directly to this
 cmdlet, then this is probably a bug in Format-Checklist.
 "@
+            }
+            $nextFsm = &$nextFsm[$stateVector] @transitionArgs
+            $previousRequirement = $requirement
         }
-        $nextFsm = &$nextFsm[$stateVector] @transitionArgs
-        $previousRequirement = $requirement
     }
 }
 
